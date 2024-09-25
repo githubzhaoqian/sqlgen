@@ -34,7 +34,7 @@ go install github.com/githubzhaoqian/sqlgen/tools/gentool@latest
   -fieldWithTags string
         generate field with custom tag
   -ot string
-        output template 指定模板数据目录
+        output template 指定模板输出目录
   -overwrite
         overwrite existing file
   -tableRegexp string
