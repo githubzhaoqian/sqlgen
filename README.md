@@ -13,7 +13,7 @@
 - [X] 动态常量类型生成
 - [X] 自定义类型对应包的导入
 - [X] 动态模板生成代码
-- 
+
 # 安装
 go install github.com/githubzhaoqian/sqlgen/tools/gentool@latest
 
