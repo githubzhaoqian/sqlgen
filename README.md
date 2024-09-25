@@ -62,10 +62,10 @@ database:
     - admin_user
   defaultAllTable: false  # 未指定table 是否生成全部表
   # generate with pointer when field is nullable
-  #  默认生成指针类型
+  #  nullable 生成指针
   fieldNullable: false  
   fieldCoverable: false
-  # 数字类型是否支持 无负数类型
+  # Signable生成 无符号类型
   fieldSignable: true 
 
   # 是否覆盖文件
