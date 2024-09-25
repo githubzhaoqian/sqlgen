@@ -1,6 +1,19 @@
 # sql gen
 
 由 Gen Guides [https://gorm.io/gen/index.html](https://gorm.io/gen/index.html) 改写。
+
+# 功能
+- [X] 输出默认模板
+- [X] 指定模板路径
+- [X] 指定tag
+- [X] 生成 model 属性get方法
+- [X] 是否覆盖已生成的文件
+- [X] table 正则并生成 model query 路径
+- [X] table 路径风格
+- [X] 动态常量类型生成
+- [X] 自定义类型对应包的导入
+- [X] 动态模板生成代码
+- 
 # 安装
 go install github.com/githubzhaoqian/sqlgen/tools/gentool@latest
 
@@ -110,18 +123,295 @@ database:
     "timex.Time": "gofastddd/internal/utils/timex"
 ```
 
+# template 值说明
+```sql
+CREATE TABLE `admin_user` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `mobile` varchar(11) DEFAULT NULL COMMENT '手机',
+  `email` varchar(255) DEFAULT NULL COMMENT '邮箱',
+  `nice_name` varchar(50) NOT NULL DEFAULT '' COMMENT '昵称',
+  `password` varchar(32) NOT NULL DEFAULT '' COMMENT '密码',
+  `salt` char(5) NOT NULL COMMENT '加盐',
+  `avatar` varchar(255) NOT NULL DEFAULT '' COMMENT '头像',
+  `status` tinyint(3) unsigned NOT NULL DEFAULT '1' COMMENT '状态',
+  `reason` varchar(255) DEFAULT '' COMMENT '原因',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_mobile` (`mobile`),
+  UNIQUE KEY `idx_email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='管理员表';
 
-## 功能
-- [X] 输出默认模板
-- [X] 指定模板路径
-- [X] 指定tag
-- [X] 生成 model 属性get方法
-- [X] 是否覆盖已生成的文件
-- [X] table 正则并生成 model query 路径
-- [X] table 路径风格
-- [X] 动态常量类型生成
-- [X] 自定义类型对应包的导入
-- [X] 动态模板生成代码
+```
+
+```json
+{
+    "Generated": true,
+    "FileName": "admin_user",
+    "S": "u",
+    "QueryStructName": "user",
+    "ModelStructName": "User",
+    "TableName": "admin_user",
+    "TableComment": "管理员表",
+    "Fields": [
+        {
+            "Name": "ID",
+            "ColumnName": "id",
+            "TypeName": "uint32",
+            "OriginalTypeName": "uint32",
+            "DatabaseTypeName": "int",
+            "ColumnType": "int(10) unsigned",
+            "PrimaryKey": true,
+            "AutoIncrement": true,
+            "Length": 0,
+            "DecimalSizeOK": true,
+            "DecimalSizeScale": 0,
+            "DecimalSizePrecision": 10,
+            "Nullable": false,
+            "Unique": false,
+            "ScanType": {},
+            "Comment": "",
+            "DefaultValueOK": false,
+            "DefaultValue": "",
+            "CustomTypeMap": {}
+        },
+        {
+            "Name": "Mobile",
+            "ColumnName": "mobile",
+            "TypeName": "string",
+            "OriginalTypeName": "string",
+            "DatabaseTypeName": "varchar",
+            "ColumnType": "varchar(11)",
+            "PrimaryKey": false,
+            "AutoIncrement": false,
+            "Length": 11,
+            "DecimalSizeOK": false,
+            "DecimalSizeScale": 0,
+            "DecimalSizePrecision": 0,
+            "Nullable": true,
+            "Unique": true,
+            "ScanType": {},
+            "Comment": "手机",
+            "DefaultValueOK": false,
+            "DefaultValue": "",
+            "CustomTypeMap": {}
+        },
+        {
+            "Name": "Email",
+            "ColumnName": "email",
+            "TypeName": "string",
+            "OriginalTypeName": "string",
+            "DatabaseTypeName": "varchar",
+            "ColumnType": "varchar(255)",
+            "PrimaryKey": false,
+            "AutoIncrement": false,
+            "Length": 255,
+            "DecimalSizeOK": false,
+            "DecimalSizeScale": 0,
+            "DecimalSizePrecision": 0,
+            "Nullable": true,
+            "Unique": true,
+            "ScanType": {},
+            "Comment": "邮箱",
+            "DefaultValueOK": false,
+            "DefaultValue": "",
+            "CustomTypeMap": {}
+        },
+        {
+            "Name": "NiceName",
+            "ColumnName": "nice_name",
+            "TypeName": "string",
+            "OriginalTypeName": "string",
+            "DatabaseTypeName": "varchar",
+            "ColumnType": "varchar(50)",
+            "PrimaryKey": false,
+            "AutoIncrement": false,
+            "Length": 50,
+            "DecimalSizeOK": false,
+            "DecimalSizeScale": 0,
+            "DecimalSizePrecision": 0,
+            "Nullable": false,
+            "Unique": false,
+            "ScanType": {},
+            "Comment": "昵称",
+            "DefaultValueOK": true,
+            "DefaultValue": "",
+            "CustomTypeMap": {}
+        },
+        {
+            "Name": "Password",
+            "ColumnName": "password",
+            "TypeName": "string",
+            "OriginalTypeName": "string",
+            "DatabaseTypeName": "varchar",
+            "ColumnType": "varchar(32)",
+            "PrimaryKey": false,
+            "AutoIncrement": false,
+            "Length": 32,
+            "DecimalSizeOK": false,
+            "DecimalSizeScale": 0,
+            "DecimalSizePrecision": 0,
+            "Nullable": false,
+            "Unique": false,
+            "ScanType": {},
+            "Comment": "密码",
+            "DefaultValueOK": true,
+            "DefaultValue": "",
+            "CustomTypeMap": {}
+        },
+        {
+            "Name": "Salt",
+            "ColumnName": "salt",
+            "TypeName": "string",
+            "OriginalTypeName": "string",
+            "DatabaseTypeName": "char",
+            "ColumnType": "char(5)",
+            "PrimaryKey": false,
+            "AutoIncrement": false,
+            "Length": 5,
+            "DecimalSizeOK": false,
+            "DecimalSizeScale": 0,
+            "DecimalSizePrecision": 0,
+            "Nullable": false,
+            "Unique": false,
+            "ScanType": {},
+            "Comment": "加盐",
+            "DefaultValueOK": false,
+            "DefaultValue": "",
+            "CustomTypeMap": {}
+        },
+        {
+            "Name": "Avatar",
+            "ColumnName": "avatar",
+            "TypeName": "string",
+            "OriginalTypeName": "string",
+            "DatabaseTypeName": "varchar",
+            "ColumnType": "varchar(255)",
+            "PrimaryKey": false,
+            "AutoIncrement": false,
+            "Length": 255,
+            "DecimalSizeOK": false,
+            "DecimalSizeScale": 0,
+            "DecimalSizePrecision": 0,
+            "Nullable": false,
+            "Unique": false,
+            "ScanType": {},
+            "Comment": "头像",
+            "DefaultValueOK": true,
+            "DefaultValue": "",
+            "CustomTypeMap": {}
+        },
+        {
+            "Name": "Status",
+            "ColumnName": "status",
+            "TypeName": "userConsts.Status",
+            "OriginalTypeName": "uint32",
+            "DatabaseTypeName": "tinyint",
+            "ColumnType": "tinyint(3) unsigned",
+            "PrimaryKey": false,
+            "AutoIncrement": false,
+            "Length": 0,
+            "DecimalSizeOK": true,
+            "DecimalSizeScale": 0,
+            "DecimalSizePrecision": 3,
+            "Nullable": false,
+            "Unique": false,
+            "ScanType": {},
+            "Comment": "状态",
+            "DefaultValueOK": true,
+            "DefaultValue": "1",
+            "CustomTypeMap": {}
+        },
+        {
+            "Name": "Reason",
+            "ColumnName": "reason",
+            "TypeName": "string",
+            "OriginalTypeName": "string",
+            "DatabaseTypeName": "varchar",
+            "ColumnType": "varchar(255)",
+            "PrimaryKey": false,
+            "AutoIncrement": false,
+            "Length": 255,
+            "DecimalSizeOK": false,
+            "DecimalSizeScale": 0,
+            "DecimalSizePrecision": 0,
+            "Nullable": true,
+            "Unique": false,
+            "ScanType": {},
+            "Comment": "原因",
+            "DefaultValueOK": true,
+            "DefaultValue": "",
+            "CustomTypeMap": {}
+        },
+        {
+            "Name": "UpdateTime",
+            "ColumnName": "update_time",
+            "TypeName": "timex.Time",
+            "OriginalTypeName": "timex.Time",
+            "DatabaseTypeName": "timestamp",
+            "ColumnType": "timestamp",
+            "PrimaryKey": false,
+            "AutoIncrement": false,
+            "Length": 0,
+            "DecimalSizeOK": true,
+            "DecimalSizeScale": 0,
+            "DecimalSizePrecision": 0,
+            "Nullable": false,
+            "Unique": false,
+            "ScanType": {},
+            "Comment": "",
+            "DefaultValueOK": true,
+            "DefaultValue": "CURRENT_TIMESTAMP",
+            "CustomTypeMap": {}
+        },
+        {
+            "Name": "CreateTime",
+            "ColumnName": "create_time",
+            "TypeName": "timex.Time",
+            "OriginalTypeName": "timex.Time",
+            "DatabaseTypeName": "timestamp",
+            "ColumnType": "timestamp",
+            "PrimaryKey": false,
+            "AutoIncrement": false,
+            "Length": 0,
+            "DecimalSizeOK": true,
+            "DecimalSizeScale": 0,
+            "DecimalSizePrecision": 0,
+            "Nullable": false,
+            "Unique": false,
+            "ScanType": {},
+            "Comment": "",
+            "DefaultValueOK": true,
+            "DefaultValue": "CURRENT_TIMESTAMP",
+            "CustomTypeMap": {}
+        }
+    ],
+    "ImportPkgPaths": [
+        "gofastddd/internal/utils/timex"
+    ],
+    "TemplatePkgPath": {
+        "Consts": "github.com/githubzhaoqian/sqlgen/tools/gentool/internal/consts/user"
+    },
+    "PkgPath": "",
+    "Package": "user",
+    "Type": "",
+    "ConvTypeMap": {
+        "datetime": "timex.Time",
+        "timestamp": "timex.Time"
+    },
+    "ConvTypePkgMap": {
+        "timex.Time": "gofastddd/internal/utils/timex"
+    },
+    "DynamicConstSuffixes": [
+        "Status",
+        "Type"
+    ],
+    "AutoValueFields": {},
+    "FieldWithTags": [
+        "json"
+    ]
+}
+```
 
 ## License
 
