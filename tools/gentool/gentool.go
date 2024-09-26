@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/githubzhaoqian/sqlgen"
@@ -156,7 +157,7 @@ func parseCmdFromYaml(path string) *CmdParams {
 // argParse is parser for cmd
 func argParse() *CmdParams {
 	// choose is file or flag
-	genPath := flag.String("c", "", "is path for sqlgen.yml")
+	genPath := flag.String("c", ".sqlgen.yaml", "is path for .sqlgen.yml")
 	dsn := flag.String("dsn", "", "consult[https://gorm.io/docs/connecting_to_the_database.html]")
 	db := flag.String("db", "", "input mysql|postgres|sqlite|sqlserver|clickhouse. consult[https://gorm.io/docs/connecting_to_the_database.html]")
 	tableList := flag.String("tables", "", "enter the required data table or leave it blank")
@@ -174,7 +175,11 @@ func argParse() *CmdParams {
 
 	cmdParse := &CmdParams{}
 	if *genPath != "" { //use yml config
-		cmdParse = parseCmdFromYaml(*genPath)
+		yamlFile, err := filepath.Abs(*genPath)
+		if err != nil {
+			panic(err)
+		}
+		cmdParse = parseCmdFromYaml(yamlFile)
 	}
 	// cmd first
 	if *dsn != "" {

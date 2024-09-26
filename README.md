@@ -20,7 +20,7 @@ go install github.com/githubzhaoqian/sqlgen/tools/gentool@latest
 # 命令
 ```text
   -c string
-        is path for sqlgen.yml
+        is path for .sqlgen.yml (default ".sqlgen.yaml")
   -db string
         input mysql|postgres|sqlite|sqlserver|clickhouse. consult[https://gorm.io/docs/connecting_to_the_database.html]
   -dsn string
