@@ -28,6 +28,9 @@ const (
 	dbSQLite     DBType = "sqlite"
 	dbSQLServer  DBType = "sqlserver"
 	dbClickHouse DBType = "clickhouse"
+
+	siteUrl = "github.com/githubzhaoqian/sqlgen"
+	version = "v1.1.5"
 )
 
 // CmdParams is command line parameters
@@ -171,6 +174,10 @@ func argParse() *CmdParams {
 	tableRegexp := flag.String("tableRegexp", "", "table regexp")
 	tableRegexpStyle := flag.String("tableRegexpStyle", "", "table regexp style: lower/camel/snake")
 
+	flag.Usage = func() {
+		fmt.Fprintf(os.Stderr, "sqlgen\n version: %s:\n siteUrl: [%s]:\n\n", version, siteUrl)
+		flag.PrintDefaults()
+	}
 	flag.Parse()
 
 	cmdParse := &CmdParams{}
