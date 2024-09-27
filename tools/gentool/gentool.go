@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"github.com/githubzhaoqian/sqlgen"
-	"gopkg.in/yaml.v3"
 	"gorm.io/driver/clickhouse"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
@@ -29,7 +28,7 @@ const (
 	dbSQLServer  DBType = "sqlserver"
 	dbClickHouse DBType = "clickhouse"
 
-	siteUrl = "github.com/githubzhaoqian/sqlgen"
+	siteUrl = "https://github.com/githubzhaoqian/sqlgen"
 	version = "v1.1.5"
 )
 
