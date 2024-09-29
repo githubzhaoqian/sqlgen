@@ -27,12 +27,6 @@ func (f *FindVO) GetExpr() clause.Expression {
 	return expr
 }
 
-type Create{{.ModelStructName}}PO struct {
-}
-
-type Update{{.ModelStructName}}PO struct {
-}
-
 type PageData struct {
 	List  {{$beanPkg}}.{{.ModelStructName}}DTOList // 列表
 	Total int64                         // 总数

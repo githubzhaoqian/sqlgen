@@ -15,8 +15,8 @@ import (
 type Service interface {
     Search(ctx context.Context, appCtx *contextx.AppContext, vo *{{$typesPkg}}.SearchVO) (*{{$typesPkg}}.PageData, error)
     Find(ctx context.Context, appCtx *contextx.AppContext, vo *{{$typesPkg}}.FindVO) ({{$beanPkg}}.{{.ModelStructName}}DTOList, error)
-	Create(ctx context.Context, appCtx *contextx.AppContext, po *{{$typesPkg}}.Create{{.ModelStructName}}PO) (int64, error)
-	Update(ctx context.Context, appCtx *contextx.AppContext, id int64, po *{{$typesPkg}}.Update{{.ModelStructName}}PO) error
+	Create(ctx context.Context, appCtx *contextx.AppContext, po *{{$beanPkg}}.Save{{.ModelStructName}}PO) (int64, error)
+	Update(ctx context.Context, appCtx *contextx.AppContext, id int64, po *{{$beanPkg}}.Save{{.ModelStructName}}PO) error
 	TaskOrFail(ctx context.Context, appCtx *contextx.AppContext, id int64) (*{{$beanPkg}}.{{.ModelStructName}}DTO, error)
 	Task(ctx context.Context, appCtx *contextx.AppContext, id int64) (*{{$beanPkg}}.{{.ModelStructName}}DTO, bool, error)
 }

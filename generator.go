@@ -248,6 +248,7 @@ func (g *Generator) genModelConfig(tableName string, modelName string) *model.Co
 		ConvTypeMap:          g.Config.ConvTypeMap,
 		ConvTypePkgMap:       g.Config.ConvTypePkgMap,
 		DynamicConstSuffixes: g.Config.DynamicConstSuffixes,
+		AutoValueFields:      g.Config.AutoValueFields,
 	}
 }
 

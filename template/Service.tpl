@@ -58,8 +58,8 @@ func (s *service) Find(ctx context.Context, appCtx *contextx.AppContext, vo *{{$
        return {{$beanPkg}}.{{.ModelStructName}}DTOListFromModelList(daoList), nil
 }
 
-func (s *service) Create(ctx context.Context, appCtx *contextx.AppContext, po *{{$typesPkg}}.Create{{.ModelStructName}}PO) (int64, error) {
-   model := &{{$modelPkg}}.{{.ModelStructName}}{}
+func (s *service) Create(ctx context.Context, appCtx *contextx.AppContext, po *{{$beanPkg}}.Save{{.ModelStructName}}PO) (int64, error) {
+   model := po.ToModel()
    	id, err := s.{{$mapperPkg}}.Create(appCtx.DB, model)
    	if err != nil {
    		logx.Errorf(ctx, "mapper.Create err:%+v", err)
@@ -69,8 +69,8 @@ func (s *service) Create(ctx context.Context, appCtx *contextx.AppContext, po *{
    	return id, nil
 }
 
-func (s *service) Update(ctx context.Context, appCtx *contextx.AppContext, id int64, po *{{$typesPkg}}.Update{{.ModelStructName}}PO) error {
-    	model := &{{$modelPkg}}.{{.ModelStructName}}{}
+func (s *service) Update(ctx context.Context, appCtx *contextx.AppContext, id int64, po *{{$beanPkg}}.Save{{.ModelStructName}}PO) error {
+    	model := po.ToModel()
     	_, err := s.{{$mapperPkg}}.Update(appCtx.DB, id, model)
     	if err != nil {
     		logx.Errorf(ctx, "mapper.Update err:%+v", err)

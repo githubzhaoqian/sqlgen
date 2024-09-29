@@ -14,14 +14,14 @@ import (
     {{range .ImportPkgPaths}}"{{.}}"{{end}}
 )
 
-type {{$ModelStructName}}PO struct {
+type Save{{$ModelStructName}}PO struct {
 {{range .Fields}}{{$autoValueFields := inMap .Name $AutoValueFields}}{{if not $autoValueFields -}}{{.Name}} {{.TypeName}}{{- end}}
 {{end}}
 }
 
-func (po *{{$ModelStructName}}PO) ToModel() *{{$modelPkg}}.{{$ModelStructName}} {
+func (po *Save{{$ModelStructName}}PO) ToModel() *{{$modelPkg}}.{{$ModelStructName}} {
 	return &{{$modelPkg}}.{{$ModelStructName}}{
-		{{range .Fields}}{{$autoValueFields := inMap .Name $AutoValueFields}}{{if not $autoValueFields -}}{{.Name}}: po.{{.Name}}{{- end}},
+		{{range .Fields}}{{$autoValueFields := inMap .Name $AutoValueFields}}{{if not $autoValueFields -}}{{.Name}}: po.{{.Name}},{{- end}}
 		{{end}}
 	}
 }
