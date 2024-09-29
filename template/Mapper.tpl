@@ -5,7 +5,7 @@ import (
     "github.com/pkg/errors"
     "gorm.io/gorm"
     "gorm.io/gorm/clause"
-    "gofastddd/internal/utils/pagination"
+    "gofastddd/internal/consts"
 
     {{$modelPkg :=  print .QueryStructName "Model"}}
     {{$modelPkg}} "{{.TemplatePkgPath.Model}}"
@@ -29,6 +29,14 @@ func (m *mapper) Create(db *gorm.DB, model *{{$modelPkg}}.{{.ModelStructName}}) 
 	return model.ID, nil
 }
 
+func (m *mapper) BatchCreate(db *gorm.DB, modelList []*{{$modelPkg}}.{{.ModelStructName}}) error {
+    err := db.CreateInBatches(modelList, consts.BatchCreateSize).Error
+    if err != nil {
+        return errors.WithStack(err)
+    }
+    return nil
+}
+
 func (m *mapper) Update(db *gorm.DB, id int64, model *{{$modelPkg}}.{{.ModelStructName}}) (int64, error) {
 	expr := clause.Eq{Column: "id", Value: id}
 	return m.updateByExpr(db, expr, model)
@@ -39,14 +47,25 @@ func (m *mapper) UpdateMap(db *gorm.DB, id int64, upo map[string]any) (int64, er
 	return m.updateMapByExpr(db, cond, upo)
 }
 
-func (m *mapper) Task(db *gorm.DB, id int64) (*{{$modelPkg}}.{{.ModelStructName}}, bool, error) {
+func (m *mapper) BatchUpdate(db *gorm.DB, idList []int64, model *{{$modelPkg}}.{{.ModelStructName}}) (int64, error) {
+	expr := clause.IN{Column: "id", Values: lo.ToAnySlice(idList)}
+	return m.updateByExpr(db, expr, model)
+}
+
+func (m *mapper) BatchUpdateMap(db *gorm.DB, idList []int64, upo map[string]any) (int64, error) {
+	expr := clause.IN{Column: "id", Values: lo.ToAnySlice(idList)}
+	return m.updateMapByExpr(db, expr, upo)
+}
+
+
+func (m *mapper) GetByID(db *gorm.DB, id int64) (*{{$modelPkg}}.{{.ModelStructName}}, bool, error) {
 	expr := clause.Eq{Column: "id", Value: id}
-	return m.taskByExpr(db, expr)
+	return m.getByExpr(db, expr)
 }
 
 func (m *mapper) Search(db *gorm.DB, searchVO *{{$typesPkg}}.SearchVO) ([]*{{$modelPkg}}.{{.ModelStructName}}, int64, error) {
 	expr := searchVO.GetExpr()
-	return m.search(db, expr, &searchVO.Pagination)
+	return m.search(db, expr, searchVO.GetOffset(), searchVO.GetLimit(), searchVO.GetOrderBy())
 }
 
 func (m *mapper) Find(db *gorm.DB, vo *{{$typesPkg}}.FindVO) ([]*{{$modelPkg}}.{{.ModelStructName}}, error) {
@@ -55,11 +74,7 @@ func (m *mapper) Find(db *gorm.DB, vo *{{$typesPkg}}.FindVO) ([]*{{$modelPkg}}.{
 
 func (m *mapper) FindIDList(db *gorm.DB, vo *{{$typesPkg}}.FindVO, skip ...int) ([]int64, error) {
 	var IDList []int64
-	limit := pagination.MaxPageSize
-	if len(skip) > 0 {
-		limit = skip[0]
-	}
-	err := db.Model(&{{$modelPkg}}.{{.ModelStructName}}{}).Where(vo.GetExpr()).Limit(limit).Pluck("id", &IDList).Error
+	err := db.Model(&{{$modelPkg}}.{{.ModelStructName}}{}).Where(vo.GetExpr()).Pluck("id", &IDList).Error
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -77,36 +92,59 @@ func (m *mapper) Find2Map(db *gorm.DB, vo *{{$typesPkg}}.FindVO) (map[int64]*{{$
 	return result, err
 }
 
-func (m *mapper) FindByIdList(db *gorm.DB, idList []int64) ([]*{{$modelPkg}}.{{.ModelStructName}}, error) {
+func (m *mapper) FindByIDList(db *gorm.DB, idList []int64) ([]*{{$modelPkg}}.{{.ModelStructName}}, error) {
 	return m.findByExpr(db, clause.IN{Column: "id", Values: lo.ToAnySlice(idList)})
 }
 
+func (m *mapper) Count(db *gorm.DB, vo *{{$typesPkg}}.FindVO) (int64, error) {
+	return m.count(db, vo.GetExpr())
+}
+
+func (m *mapper) Exist(db *gorm.DB, vo *{{$typesPkg}}.FindVO) (bool, error) {
+	return m.exist(db, vo.GetExpr())
+}
+
 func (m *mapper) search(db *gorm.DB,
-	expr clause.Expression, pagination *pagination.Pagination) (
+	expr clause.Expression, offset, limit int, orderBy string) (
 	[]*{{$modelPkg}}.{{.ModelStructName}}, int64, error) {
-	query := db.Model(&{{$modelPkg}}.{{.ModelStructName}}{}).Where(expr)
-	var count int64
-	if err := query.Count(&count).Error; err != nil {
-		return nil, 0, errors.WithStack(err)
-	}
-	var modelList []*{{$modelPkg}}.{{.ModelStructName}}
-	if err := query.
-		Offset(pagination.GetOffset()).
-		Limit(pagination.GetLimit()).
-		Order(pagination.GetOrderBy()).
-		Find(&modelList).Error; err != nil {
-		return nil, 0, errors.WithStack(err)
-	}
+	count, err := m.count(db, expr)
+    if err != nil {
+        return nil, 0, err
+    }
+    if count == 0 {
+        return nil, 0, err
+    }
+    modelList, err := m.list(db, expr, offset, limit, orderBy)
+    if err != nil {
+        return nil, 0, errors.WithStack(err)
+    }
 	return modelList, count, nil
 }
 
-func (m *mapper) findByExpr(db *gorm.DB, expr clause.Expression, skip ...int) ([]*{{$modelPkg}}.{{.ModelStructName}}, error) {
+func (m *mapper) list(db *gorm.DB,
+	expr clause.Expression, offset, limit int, orderBy string) (
+	[]*{{$modelPkg}}.{{.ModelStructName}}, error) {
+	query := db.Model(&{{$modelPkg}}.{{.ModelStructName}}{}).Where(expr)
 	var modelList []*{{$modelPkg}}.{{.ModelStructName}}
-	limit := pagination.MaxPageSize
-	if len(skip) > 0 {
-		limit = skip[0]
+	if err := query.
+		Offset(offset).
+		Limit(limit).
+		Order(orderBy).
+		Find(&modelList).Error; err != nil {
+		return nil, errors.WithStack(err)
 	}
-	err := db.Model(&{{$modelPkg}}.{{.ModelStructName}}{}).Where(expr).Limit(limit).Find(&modelList).Error
+	return modelList, nil
+}
+
+func (m *mapper) findByExpr(db *gorm.DB, expr clause.Expression, orderBy ...string) ([]*{{$modelPkg}}.{{.ModelStructName}}, error) {
+	var modelList []*{{$modelPkg}}.{{.ModelStructName}}
+
+	query := db.Model(&{{$modelPkg}}.{{.ModelStructName}}{}).Where(expr)
+    if len(orderBy) > 0 {
+        query = query.Order(orderBy[0])
+    }
+    err := query.Find(&modelList).Error
+
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -131,7 +169,7 @@ func (m *mapper) updateByExpr(db *gorm.DB, expr clause.Expression, model *{{$mod
 	return result.RowsAffected, nil
 }
 
-func (m *mapper) taskByExpr(db *gorm.DB, expr clause.Expression) (*{{$modelPkg}}.{{.ModelStructName}}, bool, error) {
+func (m *mapper) getByExpr(db *gorm.DB, expr clause.Expression) (*{{$modelPkg}}.{{.ModelStructName}}, bool, error) {
 	model := &{{$modelPkg}}.{{.ModelStructName}}{}
 	err := db.Where(expr).First(model).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -141,6 +179,20 @@ func (m *mapper) taskByExpr(db *gorm.DB, expr clause.Expression) (*{{$modelPkg}}
 		return nil, false, errors.WithStack(err)
 	}
 	return model, true, nil
+}
+
+func (m *mapper) count(db *gorm.DB, expr clause.Expression) (int64, error) {
+	query := db.Model(&{{$modelPkg}}.{{.ModelStructName}}{}).Where(expr)
+	var count int64
+	if err := query.Count(&count).Error; err != nil {
+		return 0, errors.WithStack(err)
+	}
+	return count, nil
+}
+
+func (m *mapper) exist(db *gorm.DB, expr clause.Expression) (bool, error) {
+	_, exist, err := m.getByExpr(db, expr)
+	return exist, err
 }
 
 {{ end }}

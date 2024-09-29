@@ -30,7 +30,6 @@ const (
 	dbClickHouse DBType = "clickhouse"
 
 	siteUrl = "https://github.com/githubzhaoqian/sqlgen"
-	version = "v1.1.7"
 )
 
 // CmdParams is command line parameters
@@ -57,6 +56,7 @@ type CmdParams struct {
 	DynamicConstTemplate string   `yaml:"dynamicConstTemplate"` // 动态常量模板
 	DynamicAliasSuffix   string   `yaml:"dynamicAliasSuffix"`   // 动态常量包别名后缀 userConst
 	DynamicConstImport   bool     `yaml:"dynamicConstImport"`   // 动态常量自动导入
+	SingularTable        bool     `yaml:"singularTable"`        // 禁用表名复数
 	AutoValueFields      []string `yaml:"autoValueFields"`      // 自动默认值的字段
 	// 自定义类型
 	ConvTypeMap    map[string]string `yaml:"convTypeMap"`    // conv type
@@ -99,22 +99,21 @@ type YamlConfig struct {
 }
 
 // connectDB choose db type for connection to database
-func connectDB(t DBType, dsn string) (*gorm.DB, error) {
+func connectDB(t DBType, dsn string, cfg *gorm.Config) (*gorm.DB, error) {
 	if dsn == "" {
 		return nil, fmt.Errorf("dsn cannot be empty")
 	}
-
 	switch t {
 	case dbMySQL:
-		return gorm.Open(mysql.Open(dsn))
+		return gorm.Open(mysql.Open(dsn), cfg)
 	case dbPostgres:
-		return gorm.Open(postgres.Open(dsn))
+		return gorm.Open(postgres.Open(dsn), cfg)
 	case dbSQLite:
-		return gorm.Open(sqlite.Open(dsn))
+		return gorm.Open(sqlite.Open(dsn), cfg)
 	case dbSQLServer:
-		return gorm.Open(sqlserver.Open(dsn))
+		return gorm.Open(sqlserver.Open(dsn), cfg)
 	case dbClickHouse:
-		return gorm.Open(clickhouse.Open(dsn))
+		return gorm.Open(clickhouse.Open(dsn), cfg)
 	default:
 		return nil, fmt.Errorf("unknow db %q (support mysql || postgres || sqlite || sqlserver for now)", t)
 	}
@@ -246,7 +245,12 @@ func main() {
 		log.Println("OutputTemplate end")
 		return
 	}
-	db, err := connectDB(DBType(config.DB), config.DSN)
+
+	dbCfg := &gorm.Config{
+		NamingStrategy: schema.NamingStrategy{
+			SingularTable: config.SingularTable, // 禁用表名复数
+		}}
+	db, err := connectDB(DBType(config.DB), config.DSN, dbCfg)
 	if err != nil {
 		log.Fatalln("connect db server fail:", err)
 	}

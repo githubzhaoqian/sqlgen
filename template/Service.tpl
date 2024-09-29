@@ -18,17 +18,16 @@ import (
 )
 
 type service struct {
-    mapper {{$mapperPkg}}.Mapper
+    {{$mapperPkg}} {{$mapperPkg}}.Mapper
     cfg              *config.Config
 }
 
 func New(
     cfg *config.Config,
 ) Service {
-    mapper := {{$mapperPkg}}.New()
 	return &service{
-	    mapper: mapper,
-	    cfg: config,
+	    {{$mapperPkg}}: {{$mapperPkg}}.New(),
+	    cfg: cfg,
 	}
 }
 
@@ -37,7 +36,7 @@ func New(
 // {{.ModelStructName}}UpdateErr = 0
 // {{.ModelStructName}}NotExistErr = 0
 func (s *service) Search(ctx context.Context, appCtx *contextx.AppContext, vo *{{$typesPkg}}.SearchVO) (*{{$typesPkg}}.PageData, error) {
-    daoList, total, err := s.mapper.Search(appCtx.DB, vo)
+    daoList, total, err := s.{{$mapperPkg}}.Search(appCtx.DB, vo)
     if err != nil {
         logx.Errorf(ctx, "mapper.Search err: %+v", err)
         // todo return nil, errorx.NewErr(code.{{.ModelStructName}}SearchErr)
@@ -50,7 +49,7 @@ func (s *service) Search(ctx context.Context, appCtx *contextx.AppContext, vo *{
 }
 
 func (s *service) Find(ctx context.Context, appCtx *contextx.AppContext, vo *{{$typesPkg}}.FindVO) ({{$beanPkg}}.{{.ModelStructName}}DTOList, error) {
-   daoList, total, err := s.mapper.Find(appCtx.DB, vo)
+   daoList, err := s.{{$mapperPkg}}.Find(appCtx.DB, vo)
        if err != nil {
            logx.Errorf(ctx, "mapper.Find err: %+v", err)
            // todo return nil, errorx.NewErr(code.{{.ModelStructName}}SearchErr)
@@ -61,7 +60,7 @@ func (s *service) Find(ctx context.Context, appCtx *contextx.AppContext, vo *{{$
 
 func (s *service) Create(ctx context.Context, appCtx *contextx.AppContext, po *{{$typesPkg}}.Create{{.ModelStructName}}PO) (int64, error) {
    model := &{{$modelPkg}}.{{.ModelStructName}}{}
-   	id, err := s.mapper.Create(appCtx.DB, model)
+   	id, err := s.{{$mapperPkg}}.Create(appCtx.DB, model)
    	if err != nil {
    		logx.Errorf(ctx, "mapper.Create err:%+v", err)
    		// todo return 0, errorx.NewErr(code.{{.ModelStructName}}CreateErr)
@@ -72,7 +71,7 @@ func (s *service) Create(ctx context.Context, appCtx *contextx.AppContext, po *{
 
 func (s *service) Update(ctx context.Context, appCtx *contextx.AppContext, id int64, po *{{$typesPkg}}.Update{{.ModelStructName}}PO) error {
     	model := &{{$modelPkg}}.{{.ModelStructName}}{}
-    	_, err := s.mapper.Update(appCtx.DB, id, model)
+    	_, err := s.{{$mapperPkg}}.Update(appCtx.DB, id, model)
     	if err != nil {
     		logx.Errorf(ctx, "mapper.Update err:%+v", err)
     		// todo return errorx.NewErr(code.{{.ModelStructName}}UpdateErr)
@@ -94,13 +93,13 @@ func (s *service) TaskOrFail(ctx context.Context, appCtx *contextx.AppContext, i
 }
 
 func (s *service) Task(ctx context.Context, appCtx *contextx.AppContext, id int64) (*{{$beanPkg}}.{{.ModelStructName}}DTO, bool, error) {
-    model, exist, err := s.mapper.Task(appCtx.DB, id)
+    model, exist, err := s.{{$mapperPkg}}.GetByID(appCtx.DB, id)
     	if err != nil {
     		logx.Errorf(ctx, "mapper.Task err:%+v", err)
     		// todo return nil, false, errorx.NewErr(code.{{.ModelStructName}}rSearchErr)
     		return nil, false, err
     	}
-    	dto := {{$beanPkg}}.{{.ModelStructName}}DtoFromModel(model)
+    	dto := {{$beanPkg}}.{{.ModelStructName}}DTOFromModel(model)
     	return dto, exist, nil
 }
 
