@@ -114,6 +114,8 @@ database:
   dynamicConstImport: false
   # 常量包后缀
   dynamicAliasSuffix: "Consts"
+  # 禁用表名复数
+  singularTable: true
   # 自定义类型转换
   convTypeMap:
     timestamp: "timex.Time"
