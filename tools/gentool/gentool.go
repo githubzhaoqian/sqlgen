@@ -30,7 +30,7 @@ const (
 	dbClickHouse DBType = "clickhouse"
 
 	siteUrl = "https://github.com/githubzhaoqian/sqlgen"
-	version = "v1.1.5"
+	version = "v1.1.7"
 )
 
 // CmdParams is command line parameters

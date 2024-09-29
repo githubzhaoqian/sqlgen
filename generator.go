@@ -66,12 +66,13 @@ func NewGenerator(cfg Config) *Generator {
 	}
 	tpl := template.New("_")
 	tpl.Funcs(funcs.FuncMap)
-	var (
-		err error
-	)
 	if cfg.TemplateDir != "" {
-		templateFs := os.DirFS(cfg.TemplateDir)
-		tpl, err = template.ParseFS(templateFs, TemplatePrefix)
+		templateDir, err := filepath.Abs(cfg.TemplateDir)
+		if err != nil {
+			panic(fmt.Errorf("filepath.Abs(cfg.TemplateDir) fail: %w", err))
+		}
+		templateFs := os.DirFS(templateDir)
+		tpl, err = tpl.ParseFS(templateFs, TemplatePrefix)
 		if err != nil {
 			panic(fmt.Errorf("create generator template.ParseFS fail: %w", err))
 		}
@@ -79,7 +80,7 @@ func NewGenerator(cfg Config) *Generator {
 		templateFs := TemplateFs
 		entryList, err := templateFs.ReadDir(TemplateName)
 		if err != nil {
-			panic(err)
+			panic(fmt.Errorf("templateFs.ReadDir fail: %w", err))
 		}
 		for _, entry := range entryList {
 			if entry.IsDir() {
