@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/githubzhaoqian/sqlgen"
+	"gopkg.in/yaml.v3"
 	"gorm.io/driver/clickhouse"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
