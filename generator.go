@@ -386,7 +386,7 @@ func (g *Generator) templateOutput(tpl *Template, data *generate.StructMeta) err
 	if err != nil {
 		return err
 	}
-	err = g.output(outFile, buf.Bytes())
+	err = g.output(outFile, buf.Bytes(), tpl.IsGo)
 	if err != nil {
 		if errors.Is(err, ErrFileExist) {
 			g.warn(fmt.Sprintf("%s is exist skip overwrite", outFile))
@@ -451,7 +451,15 @@ func (g *Generator) fillModelPkgPath(tplName, table, filePath string, data *gene
 }
 
 // output format and output
-func (g *Generator) output(fileName string, content []byte) error {
+func (g *Generator) output(fileName string, content []byte, isGo bool) error {
+	if !isGo {
+		_, statErr := os.Stat(fileName)
+		if !g.Overwrite && (statErr == nil || os.IsExist(statErr)) {
+			return ErrFileExist
+		}
+		//fmt.Println(fileInfo)
+		return os.WriteFile(fileName, content, 0640)
+	}
 	result, err := imports.Process(fileName, content, nil)
 	if err != nil {
 		lines := strings.Split(string(content), "\n")

@@ -29,6 +29,7 @@ _testmain.go
 *.sublime-workspace
 !.gitkeep
 .DS_Store
+.sqlgen2.yaml
 /.idea
 /.vscode
 __debug_bin
