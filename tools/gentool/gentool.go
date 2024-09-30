@@ -8,15 +8,14 @@ import (
 	"path/filepath"
 	"strings"
 
-	"gopkg.in/yaml.v3"
+	"github.com/githubzhaoqian/sqlgen"
+	yaml "gopkg.in/yaml.v3"
 	"gorm.io/driver/clickhouse"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
-
-	"github.com/githubzhaoqian/sqlgen"
 )
 
 // DBType database type
@@ -66,9 +65,9 @@ type CmdParams struct {
 }
 
 type Template struct {
-	OutPath     string `yaml:"outPath"`     // specify a directory for output
-	Name        string `yaml:"name"`        // template name
-	DynamicType bool   `yaml:"dynamicType"` // template name
+	OutPath string `yaml:"outPath"` // specify a directory for output
+	Name    string `yaml:"name"`    // template name
+	IsGo    bool   `yaml:"isGo"`    // 是否是go文件
 }
 
 func (c *CmdParams) revise() *CmdParams {
@@ -260,9 +259,9 @@ func main() {
 	var templates []sqlgen.Template
 	for _, tpl := range config.Templates {
 		templates = append(templates, sqlgen.Template{
-			OutPath:     tpl.OutPath,
-			Name:        tpl.Name,
-			DynamicType: tpl.DynamicType,
+			OutPath: tpl.OutPath,
+			Name:    tpl.Name,
+			IsGo:    tpl.IsGo,
 		})
 	}
 	g := sqlgen.NewGenerator(sqlgen.Config{

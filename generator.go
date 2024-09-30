@@ -164,9 +164,9 @@ type Generator struct {
 }
 
 type Template struct {
-	OutPath     string // specify a directory for output
-	Name        string // template name
-	DynamicType bool
+	OutPath string // specify a directory for output
+	Name    string // template name
+	IsGo    bool
 }
 
 // UseDB set db connection
@@ -378,7 +378,9 @@ func (g *Generator) templateOutput(tpl *Template, data *generate.StructMeta) err
 	}
 
 	var buf bytes.Buffer
-	data.Package = g.getPkgPath(modelDir)
+	if tpl.IsGo {
+		data.Package = g.getPkgPath(modelDir)
+	}
 	err = g.render(tpl.Name, &buf, data)
 	if err != nil {
 		return err
@@ -392,7 +394,9 @@ func (g *Generator) templateOutput(tpl *Template, data *generate.StructMeta) err
 		}
 	}
 	g.info(fmt.Sprintf("generate file(table <%s> -> %s", data.TableName, outFile))
-	g.fillModelPkgPath(tpl.Name, data.TableName, modelDir, data)
+	if tpl.IsGo {
+		g.fillModelPkgPath(tpl.Name, data.TableName, modelDir, data)
+	}
 	return nil
 }
 

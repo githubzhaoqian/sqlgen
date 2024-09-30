@@ -83,22 +83,31 @@ database:
   templates:
     - outPath: "./internal/domain/{1}/internal/model/{2}/model.go"
       name: "Model"
+      isGo: true # 是否是go文件
     - outPath: "./internal/domain/{1}/bean/{2}/interface.go"
       name: "BeanInterface"
+      isGo: true
     - outPath: "./internal/domain/{1}/bean/{2}/bean.go"
       name: "Bean"
+      isGo: true
     - outPath: "./internal/domain/{1}/bean/{2}/po.go"
       name: "PO"
+      isGo: true
     - outPath: "./internal/types/{2}/types.go"
       name: "Types"
+      isGo: true
     - outPath: "./internal/domain/{1}/internal/mapper/{2}/interface.go"
       name: "MapperInterface"
+      isGo: true
     - outPath: "./internal/domain/{1}/internal/mapper/{2}/mapper.go"
       name: "Mapper"
+      isGo: true
     - outPath: "./internal/domain/{1}/service/{2}/interface.go"
       name: "ServiceInterface"
+      isGo: true
     - outPath: "./internal/domain/{1}/service/{2}/service.go"
       name: "Service"
+      isGo: true
   # 动态常量
   dynamicConstSuffixes:
     - "Status"
