@@ -15,6 +15,12 @@ var FuncMap = template.FuncMap{
 	"inMap":    inMap,
 	"lcFirst":  LcFirst,
 	"contains": Contains,
+	"incr":     incr,
+}
+
+// incr 累加
+func incr(key int, increment int) int {
+	return key + increment
 }
 
 // Suffixes 后缀
