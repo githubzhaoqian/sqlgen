@@ -125,7 +125,7 @@ database:
   dynamicAliasSuffix: "Consts"
   # 禁用表名复数
   singularTable: true
-  # 首字母缩略 
+  # 缩略词 
   # "API", "ASCII", "CPU", "CSS", "DNS", "EOF", "GUID", "HTML", "HTTP", "HTTPS", "ID", "IP", 
   # "JSON", "LHS", "QPS", "RAM", "RHS", "RPC", "SLA", "SMTP", "SSH", "TLS", "TTL", "UID", "UI", 
   # "UUID", "URI", "URL", "UTF8", "VM", "XML", "XSRF", "XSS"

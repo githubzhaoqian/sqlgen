@@ -56,7 +56,7 @@ database:
   dynamicConstOutPath: "./internal/consts/{2}/consts.go"
   dynamicConstTemplate: "Consts"
   dynamicConstImport: false
-  initialisms: true # 首字母缩略
+  initialisms: true # 缩略词
   dynamicAliasSuffix: "Consts"
   convTypeMap:
     timestamp: "timex.Time"
