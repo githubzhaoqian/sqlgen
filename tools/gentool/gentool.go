@@ -15,7 +15,6 @@ import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
-	"gorm.io/gorm/schema"
 
 	"github.com/githubzhaoqian/sqlgen"
 )
@@ -59,6 +58,7 @@ type CmdParams struct {
 	DynamicAliasSuffix   string   `yaml:"dynamicAliasSuffix"`   // 动态常量包别名后缀 userConst
 	DynamicConstImport   bool     `yaml:"dynamicConstImport"`   // 动态常量自动导入
 	SingularTable        bool     `yaml:"singularTable"`        // 禁用表名复数
+	Initialisms          bool     `yaml:"initialisms"`          // 首字母缩略
 	AutoValueFields      []string `yaml:"autoValueFields"`      // 自动默认值的字段
 	// 自定义类型
 	ConvTypeMap    map[string]string `yaml:"convTypeMap"`    // conv type
@@ -249,8 +249,9 @@ func main() {
 	}
 
 	dbCfg := &gorm.Config{
-		NamingStrategy: schema.NamingStrategy{
+		NamingStrategy: NamingStrategy{
 			SingularTable: config.SingularTable, // 禁用表名复数
+			Initialisms:   config.Initialisms,   // 首字母缩略
 		}}
 	db, err := connectDB(DBType(config.DB), config.DSN, dbCfg)
 	if err != nil {
