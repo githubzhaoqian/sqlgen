@@ -335,6 +335,7 @@ func (g *Generator) generateModelFile() error {
 			err := g.templateOutput(&Template{
 				OutPath: g.DynamicConstOutPath,
 				Name:    g.DynamicConstTemplate,
+				IsGo:    true,
 			}, data)
 			if err != nil {
 				return err
