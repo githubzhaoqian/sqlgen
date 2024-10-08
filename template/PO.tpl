@@ -15,7 +15,7 @@ import (
 )
 
 type Save{{$ModelStructName}}PO struct {
-{{range .Fields}}{{$autoValueFields := inMap .Name $AutoValueFields}}{{if not $autoValueFields -}}{{.Name}} {{.TypeName}}{{- end}}
+{{range .Fields}}{{$autoValueFields := inMap .Name $AutoValueFields}}{{if not $autoValueFields -}}{{.Name}} {{.TypeName}} `binding:"required" attr:"{{.Comment}}"` // {{.Comment}} {{- end}}
 {{end}}
 }
 

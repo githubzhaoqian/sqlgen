@@ -13,7 +13,7 @@ import (
 )
 
 type {{$ModelStructName}}DTO struct {
-{{range .Fields}}{{.Name}} {{.TypeName}}
+{{range .Fields}}{{.Name}} {{.TypeName}} // {{.Comment}}
 {{end}}
 }
 

@@ -432,18 +432,21 @@ CREATE TABLE `admin_user` (
 # 增加方法
 ```golang
 var FuncMap = template.FuncMap{
-	"suffixes": Suffixes,
-	"suffix":   suffix,
-	"pathBase": pathBase,
-	"inMap":    inMap,
-	"lcFirst":  LcFirst,
-	"contains": Contains,
-	"incr":     incr,
+    "suffixes":  Suffixes,
+    "suffix":    suffix,
+    "pathBase":  pathBase,
+    "inMap":     inMap,
+    "lcFirst":   LcFirst,
+    "contains":  Contains,
+    "incr":      incr,
+    "toLower":   ToLower,
+    "snake":     Snake,
+    "kebabCase": KebabCase,
 }
 
 // incr 累加
 func incr(key int, increment int) int {
-return key + increment
+    return key + increment
 }
 
 // Suffixes 后缀
@@ -452,7 +455,7 @@ func Suffixes(name string, suffixList []string) bool {
         if strings.HasSuffix(name, suffix) {
             return true
         }
-    }
+	}
     return false
 }
 
@@ -481,9 +484,30 @@ func inMap(key string, data map[string]struct{}) bool {
     _, ok := data[key]
     return ok
 }
+
+func ToLower(src string) string {
+    str := stringy.New(src)
+    return str.CamelCase().ToLower()
+}
+
+func Camel(src string) string {
+    str := stringy.New(src)
+    return str.CamelCase().Get()
+}
+
+func Snake(src string) string {
+    str := stringy.New(src)
+    return str.SnakeCase().ToLower()
+}
+
 func LcFirst(src string) string {
     str := stringy.New(src)
     return str.LcFirst()
+}
+
+func KebabCase(src string) string {
+    str := stringy.New(src)
+    return str.KebabCase().ToLower()
 }
 ```
 ## License

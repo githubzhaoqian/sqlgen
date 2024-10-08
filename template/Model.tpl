@@ -15,7 +15,7 @@ const Table = "{{.TableName}}"
 
 // {{.ModelStructName}} {{.TableComment}}
 type {{.ModelStructName}} struct {
-    {{range .Fields}}{{$columnName := .ColumnName}}{{.Name}} {{.TypeName}} `gorm:"column:{{.ColumnName}};type:{{.ColumnType}};{{if not .Nullable -}}NOT NULL;{{- end}}{{if .DefaultValueOK -}}default:'{{.DefaultValue}}'{{- end}}"{{range $fieldWithTags}} {{.}}:"{{$columnName}}{{end}}"` {{if .Comment -}}// {{.Comment}}{{- end}}
+    {{range .Fields}}{{$columnName := .ColumnName}}{{.Name}} {{.TypeName}} `gorm:"column:{{.ColumnName}};type:{{.ColumnType}};{{if not .Nullable -}}NOT NULL;{{- end}}{{if .DefaultValueOK -}}default:'{{.DefaultValue}}'{{- end}}"{{range $fieldWithTags}} {{.}}:"{{$columnName}}"{{end}}` {{if .Comment -}}// {{.Comment}}{{- end}}
     {{end}}
 }
 

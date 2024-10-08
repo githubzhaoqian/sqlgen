@@ -6,6 +6,8 @@ import (
     "context"
     "gofastddd/internal/contextx"
     "gofastddd/internal/utils/logx"
+    "gofastddd/internal/common/code"
+    "gofastddd/internal/utils/errorx"
 
     {{$modelPkg :=  print .QueryStructName "Model"}}
     {{$modelPkg}} "{{.TemplatePkgPath.Model}}"
@@ -31,16 +33,21 @@ func New(
 	}
 }
 
+// todo
 // {{.ModelStructName}}SearchErr = 0
 // {{.ModelStructName}}CreateErr = 0
 // {{.ModelStructName}}UpdateErr = 0
 // {{.ModelStructName}}NotExistErr = 0
+
+// {{.ModelStructName}}SearchErr : "{{.TableComment}}查询失败"
+// {{.ModelStructName}}CreateErr : "{{.TableComment}}创建失败"
+// {{.ModelStructName}}UpdateErr : "{{.TableComment}}更新失败"
+// {{.ModelStructName}}NotExistErr : "{{.TableComment}}不存在"
 func (s *service) Search(ctx context.Context, appCtx *contextx.AppContext, vo *{{$typesPkg}}.SearchVO) (*{{$typesPkg}}.PageData, error) {
     daoList, total, err := s.{{$mapperPkg}}.Search(appCtx.DB, vo)
     if err != nil {
         logx.Errorf(ctx, "mapper.Search err: %+v", err)
-        // todo return nil, errorx.NewErr(code.{{.ModelStructName}}SearchErr)
-        return nil, err
+        return nil, errorx.NewErr(code.{{.ModelStructName}}SearchErr)
     }
     return &{{$typesPkg}}.PageData{
         Total: total,
@@ -52,8 +59,7 @@ func (s *service) Find(ctx context.Context, appCtx *contextx.AppContext, vo *{{$
    daoList, err := s.{{$mapperPkg}}.Find(appCtx.DB, vo)
        if err != nil {
            logx.Errorf(ctx, "mapper.Find err: %+v", err)
-           // todo return nil, errorx.NewErr(code.{{.ModelStructName}}SearchErr)
-           return nil, err
+           return nil, errorx.NewErr(code.{{.ModelStructName}}SearchErr)
        }
        return {{$beanPkg}}.{{.ModelStructName}}DTOListFromModelList(daoList), nil
 }
@@ -63,8 +69,7 @@ func (s *service) Create(ctx context.Context, appCtx *contextx.AppContext, po *{
    	id, err := s.{{$mapperPkg}}.Create(appCtx.DB, model)
    	if err != nil {
    		logx.Errorf(ctx, "mapper.Create err:%+v", err)
-   		// todo return 0, errorx.NewErr(code.{{.ModelStructName}}CreateErr)
-   		return 0, err
+   		return 0, errorx.NewErr(code.{{.ModelStructName}}CreateErr)
    	}
    	return id, nil
 }
@@ -74,8 +79,7 @@ func (s *service) Update(ctx context.Context, appCtx *contextx.AppContext, id in
     	_, err := s.{{$mapperPkg}}.Update(appCtx.DB, id, model)
     	if err != nil {
     		logx.Errorf(ctx, "mapper.Update err:%+v", err)
-    		// todo return errorx.NewErr(code.{{.ModelStructName}}UpdateErr)
-    		return err
+    		return errorx.NewErr(code.{{.ModelStructName}}UpdateErr)
     	}
     	return nil
 }
@@ -86,8 +90,7 @@ func (s *service) TaskOrFail(ctx context.Context, appCtx *contextx.AppContext, i
         return nil, err
     }
     if !exist {
-        // todo return nil, errorx.NewErr(code.{{.ModelStructName}}NotExistErr)
-        return nil, errors.New("not exist")
+        return nil, errorx.NewErr(code.{{.ModelStructName}}NotExistErr)
     }
     return dto, nil
 }
@@ -96,8 +99,7 @@ func (s *service) Task(ctx context.Context, appCtx *contextx.AppContext, id int6
     model, exist, err := s.{{$mapperPkg}}.GetByID(appCtx.DB, id)
     	if err != nil {
     		logx.Errorf(ctx, "mapper.Task err:%+v", err)
-    		// todo return nil, false, errorx.NewErr(code.{{.ModelStructName}}rSearchErr)
-    		return nil, false, err
+    		return nil, false, errorx.NewErr(code.{{.ModelStructName}}SearchErr)
     	}
     	dto := {{$beanPkg}}.{{.ModelStructName}}DTOFromModel(model)
     	return dto, exist, nil

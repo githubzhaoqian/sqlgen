@@ -9,13 +9,16 @@ import (
 )
 
 var FuncMap = template.FuncMap{
-	"suffixes": Suffixes,
-	"suffix":   suffix,
-	"pathBase": pathBase,
-	"inMap":    inMap,
-	"lcFirst":  LcFirst,
-	"contains": Contains,
-	"incr":     incr,
+	"suffixes":  Suffixes,
+	"suffix":    suffix,
+	"pathBase":  pathBase,
+	"inMap":     inMap,
+	"lcFirst":   LcFirst,
+	"contains":  Contains,
+	"incr":      incr,
+	"toLower":   ToLower,
+	"snake":     Snake,
+	"kebabCase": KebabCase,
 }
 
 // incr 累加
@@ -77,4 +80,9 @@ func Snake(src string) string {
 func LcFirst(src string) string {
 	str := stringy.New(src)
 	return str.LcFirst()
+}
+
+func KebabCase(src string) string {
+	str := stringy.New(src)
+	return str.KebabCase().ToLower()
 }
