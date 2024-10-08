@@ -108,6 +108,12 @@ database:
     - outPath: "./internal/domain/{1}/service/{2}/service.go"
       name: "Service"
       isGo: true
+    - outPath: "./internal/handle/adminapi/v1/{2}/interface.go"
+      name: "AdminHandlerInterface"
+      isGo: true
+    - outPath: "./internal/handle/adminapi/v1/{2}/handler.go"
+      name: "AdminHandler"
+      isGo: true
   # 动态常量
   dynamicConstSuffixes:
     - "Status"
