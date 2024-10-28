@@ -27,4 +27,5 @@ type StructMeta struct {
 	DynamicConstSuffixes []string            // dynamic const suffix
 	AutoValueFields      map[string]struct{} // dynamic const suffix
 	FieldWithTags        []string
+	SubMatch             []string
 }

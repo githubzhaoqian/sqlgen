@@ -193,7 +193,11 @@ func (g *Generator) GenerateModel(tableName string) *generate.StructMeta {
 	}
 
 	modelName = g.db.Config.NamingStrategy.SchemaName(modelName)
-	return g.GenerateModelAs(tableName, modelName)
+	meta := g.GenerateModelAs(tableName, modelName)
+	if len(strList) > 0 {
+		meta.SubMatch = strList[0]
+	}
+	return meta
 }
 
 // GenerateModelAs catch table info from db, return a BaseStruct

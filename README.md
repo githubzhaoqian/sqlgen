@@ -431,7 +431,8 @@ CREATE TABLE `admin_user` (
     "AutoValueFields": {},
     "FieldWithTags": [
         "json"
-    ]
+    ],
+    "SubMatch": ["admin_user", "user", "user"]
 }
 ```
 
