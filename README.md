@@ -432,7 +432,7 @@ CREATE TABLE `admin_user` (
     "FieldWithTags": [
         "json"
     ],
-    "SubMatch": ["admin_user", "user", "user"]
+    "SubMatch": ["admin_user", "admin", "user"]
 }
 ```
 
