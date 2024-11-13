@@ -10,6 +10,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"regexp"
 	"runtime"
@@ -35,6 +36,7 @@ var (
 
 const TemplateName = "template"
 const TemplatePrefix = "*tpl"
+const CmdFileID = "{f}"
 
 //go:embed template
 var TemplateFs embed.FS
@@ -167,6 +169,12 @@ type Template struct {
 	OutPath string // specify a directory for output
 	Name    string // template name
 	IsGo    bool
+	Cmds    []Cmd // 要执行的命令 {f} 表示模板文件名
+}
+
+type Cmd struct {
+	Name   string
+	ArgStr string
 }
 
 // UseDB set db connection
@@ -401,6 +409,16 @@ func (g *Generator) templateOutput(tpl *Template, data *generate.StructMeta) err
 	g.info(fmt.Sprintf("generate file(table <%s> -> %s", data.TableName, outFile))
 	if tpl.IsGo {
 		g.fillModelPkgPath(tpl.Name, data.TableName, modelDir, data)
+	}
+	for _, c := range tpl.Cmds {
+		argStr := strings.ReplaceAll(c.ArgStr, CmdFileID, outFile)
+		g.info(fmt.Sprintf("run %s %s ", c.Name, argStr))
+		cmd := exec.Command(c.Name, argStr)
+		err = cmd.Run()
+		if err != nil {
+			g.error(fmt.Sprintf("run %s %s err:%+v", c.Name, argStr, err))
+			return err
+		}
 	}
 	return nil
 }

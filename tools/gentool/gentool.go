@@ -8,14 +8,15 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/githubzhaoqian/sqlgen"
-	yaml "gopkg.in/yaml.v3"
+	"gopkg.in/yaml.v3"
 	"gorm.io/driver/clickhouse"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
+
+	"github.com/githubzhaoqian/sqlgen"
 )
 
 // DBType database type
@@ -68,6 +69,12 @@ type Template struct {
 	OutPath string `yaml:"outPath"` // specify a directory for output
 	Name    string `yaml:"name"`    // template name
 	IsGo    bool   `yaml:"isGo"`    // 是否是go文件
+	Cmds    []Cmd  `yaml:"cmds"`    // 要执行的命令 {f} 表示模板文件名
+}
+
+type Cmd struct {
+	Name   string `yaml:"name"`
+	ArgStr string `yaml:"argStr"`
 }
 
 func (c *CmdParams) revise() *CmdParams {
@@ -258,10 +265,18 @@ func main() {
 	}
 	var templates []sqlgen.Template
 	for _, tpl := range config.Templates {
+		var cmds []sqlgen.Cmd
+		for _, c := range tpl.Cmds {
+			cmds = append(cmds, sqlgen.Cmd{
+				Name:   c.Name,
+				ArgStr: c.ArgStr,
+			})
+		}
 		templates = append(templates, sqlgen.Template{
 			OutPath: tpl.OutPath,
 			Name:    tpl.Name,
 			IsGo:    tpl.IsGo,
+			Cmds:    cmds,
 		})
 	}
 	g := sqlgen.NewGenerator(sqlgen.Config{
