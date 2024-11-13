@@ -14,6 +14,7 @@
 - [X] 自定义类型对应包的导入
 - [X] 动态模板生成代码
 - [X] 模板生成后的命令
+- [X] 模板增加参数
 
 # 安装
 go install github.com/githubzhaoqian/sqlgen/tools/gentool@latest
@@ -85,9 +86,14 @@ database:
     - outPath: "./internal/domain/{1}/internal/model/{2}/model.go"
       name: "Model"
       isGo: true # 是否是go文件
-        cmds:
-        - name: "ls"
-          argStr: "{f}"  # {f}标识文件路径
+      cmds:
+       - name: "ls"
+         argStr: "{f}"  # {f}标识文件路径
+      params:   # 特殊参数 map[string]interface{}
+       tableName: 1
+       aaa:
+         - "Id"
+         - "Name"
     - outPath: "./internal/domain/{1}/bean/{2}/interface.go"
       name: "BeanInterface"
       isGo: true
@@ -436,7 +442,8 @@ CREATE TABLE `admin_user` (
     "FieldWithTags": [
         "json"
     ],
-    "SubMatch": ["admin_user", "admin", "user"]
+    "SubMatch": ["admin_user", "admin", "user"],
+    "Params": {}
 }
 ```
 

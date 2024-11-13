@@ -66,10 +66,11 @@ type CmdParams struct {
 }
 
 type Template struct {
-	OutPath string `yaml:"outPath"` // specify a directory for output
-	Name    string `yaml:"name"`    // template name
-	IsGo    bool   `yaml:"isGo"`    // 是否是go文件
-	Cmds    []Cmd  `yaml:"cmds"`    // 要执行的命令 {f} 表示模板文件名
+	OutPath string                 `yaml:"outPath"` // specify a directory for output
+	Name    string                 `yaml:"name"`    // template name
+	IsGo    bool                   `yaml:"isGo"`    // 是否是go文件
+	Cmds    []Cmd                  `yaml:"cmds"`    // 要执行的命令 {f} 表示模板文件名
+	Params  map[string]interface{} `yaml:"params"`  // 参数
 }
 
 type Cmd struct {
@@ -277,6 +278,7 @@ func main() {
 			Name:    tpl.Name,
 			IsGo:    tpl.IsGo,
 			Cmds:    cmds,
+			Params:  tpl.Params,
 		})
 	}
 	g := sqlgen.NewGenerator(sqlgen.Config{

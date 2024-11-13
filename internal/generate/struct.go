@@ -28,4 +28,5 @@ type StructMeta struct {
 	AutoValueFields      map[string]struct{} // dynamic const suffix
 	FieldWithTags        []string
 	SubMatch             []string
+	Params               map[string]interface{} // 参数
 }

@@ -169,7 +169,8 @@ type Template struct {
 	OutPath string // specify a directory for output
 	Name    string // template name
 	IsGo    bool
-	Cmds    []Cmd // 要执行的命令 {f} 表示模板文件名
+	Cmds    []Cmd                  // 要执行的命令 {f} 表示模板文件名
+	Params  map[string]interface{} // 参数
 }
 
 type Cmd struct {
@@ -341,7 +342,7 @@ func (g *Generator) generateModelFile() error {
 		if data == nil || !data.Generated {
 			continue
 		}
-
+		data.Params = map[string]interface{}{}
 		// 自定义常常量
 		if g.DynamicConstTemplate != "" {
 			err := g.templateOutput(&Template{
@@ -370,6 +371,7 @@ func (g *Generator) generateModelFile() error {
 		}
 
 		for _, tpl := range g.templateList {
+			data.Params = tpl.Params
 			err := g.templateOutput(&tpl, data)
 			if err != nil {
 				return err

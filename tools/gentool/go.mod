@@ -3,7 +3,7 @@ module github.com/githubzhaoqian/sqlgen/tools/gentool
 go 1.19
 
 require (
-	github.com/githubzhaoqian/sqlgen v1.2.8
+	github.com/githubzhaoqian/sqlgen v1.2.9
 	github.com/jinzhu/inflection v1.0.0
 	gopkg.in/yaml.v3 v3.0.1
 	gorm.io/driver/clickhouse v0.6.0

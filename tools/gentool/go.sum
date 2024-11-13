@@ -1057,6 +1057,7 @@ github.com/githubzhaoqian/sqlgen v1.2.1/go.mod h1:wzUAUQ4eyhIY1UOlmmp6p7j6lCftwq
 github.com/githubzhaoqian/sqlgen v1.2.2/go.mod h1:wzUAUQ4eyhIY1UOlmmp6p7j6lCftwqoAVS6GzaAEd1w=
 github.com/githubzhaoqian/sqlgen v1.2.6/go.mod h1:wzUAUQ4eyhIY1UOlmmp6p7j6lCftwqoAVS6GzaAEd1w=
 github.com/githubzhaoqian/sqlgen v1.2.7/go.mod h1:wzUAUQ4eyhIY1UOlmmp6p7j6lCftwqoAVS6GzaAEd1w=
+github.com/githubzhaoqian/sqlgen v1.2.8/go.mod h1:wzUAUQ4eyhIY1UOlmmp6p7j6lCftwqoAVS6GzaAEd1w=
 github.com/go-faster/city v1.0.1 h1:4WAxSZ3V2Ws4QRDrscLEDcibJY8uf41H6AhXDrNDcGw=
 github.com/go-faster/city v1.0.1/go.mod h1:jKcUJId49qdW3L1qKHH/3wPeUstCVpVSXTM6vO3VcTw=
 github.com/go-faster/errors v0.6.1 h1:nNIPOBkprlKzkThvS/0YaX8Zs9KewLCOSFQS5BU06FI=
