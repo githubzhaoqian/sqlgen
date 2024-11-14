@@ -415,7 +415,8 @@ func (g *Generator) templateOutput(tpl *Template, data *generate.StructMeta) err
 	for _, c := range tpl.Cmds {
 		argStr := strings.ReplaceAll(c.ArgStr, CmdFileID, outFile)
 		g.info(fmt.Sprintf("run %s %s ", c.Name, argStr))
-		cmd := exec.Command(c.Name, argStr)
+		args := strings.Fields(argStr)
+		cmd := exec.Command(c.Name, args...)
 		err = cmd.Run()
 		if err != nil {
 			g.error(fmt.Sprintf("run %s %s err:%+v", c.Name, argStr, err))
